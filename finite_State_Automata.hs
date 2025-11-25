@@ -1,12 +1,12 @@
 --making finite state automata
-type FSA q = ([q], Alphabet, q, [q], [Transition q])
+type FSA q = ([q], Alphabet, [q], [q], [Transition q])
 type Alphabet = [Char]
 type Transition t = (t, Char, t)
 
 m1 :: FSA Int
 m1 = ([0, 1, 2, 3, 4],
     ['a', 'b'],
-    0,
+    [0],
     [4],
     [(0,'a',1), 
     (0,'b',1), 
@@ -27,7 +27,7 @@ states (q, _, _, _, _) = q
 alpha :: FSA a -> Alphabet
 alpha (_, a, _, _, _) = a
 
-start :: FSA q -> q
+start :: FSA q -> [q]
 start (_, _, q, _, _) = q
 
 final :: FSA q -> [q]
@@ -49,17 +49,19 @@ addTransition :: FSA q -> Transition q -> [Transition q]
 addTransition (_, _, _, _, q) t = t:q
 
 --accepts
-{-
 accepts :: (Eq q) => FSA q -> String -> Bool
-accepts m xs = acceptsFrom m (start m) xs
-
-acceptsFrom :: (Eq q) => FSA q -> q -> String -> Bool
-acceptsFrom m q [] = q `elem` final m
-acceptsFrom m q (x:xs) = acceptsFrom -}
+accepts (_, _, ss, fs, ts) "" = or[q `elem` ss | q <- fs]
+accepts m (x:xs) = accepts (step m x) xs
 
 --Closure
 
 --next
+next :: (Eq q) => [Transition q] -> Char -> [q] -> [q]
+next trans x ss = 
+    [q1 | (q, y, q1) <- trans, x == y, q `elem` ss]
+
+step :: (Eq q) => FSA q -> Char -> FSA q
+step (qs, as, ss, fs, ts) x = (qs, as, (next ts x ss), fs, ts) 
 
 --determinnistic
 
