@@ -36,11 +36,26 @@ final (_, _, _, q, _) = q
 trans :: FSA q -> [Transition q]
 trans (_, _, _, _, q) = q
 
--- addState
+delta :: (Eq q) => FSA q -> q -> Char -> [q]
+delta m q c = 
+    [q1 | (q0, c0, q1) <- trans m, q0 == q, c0 == c]
 
--- addTransition
+-- function adds state to list of states in first element of data type FSA
+addState :: (Eq q) => FSA q -> q -> [q]
+addState (q, _, _, _, _) s = s:q
+
+-- function adds a transition to the established list of transitions
+addTransition :: FSA q -> Transition q -> [Transition q]
+addTransition (_, _, _, _, q) t = t:q
 
 --accepts
+{-
+accepts :: (Eq q) => FSA q -> String -> Bool
+accepts m xs = acceptsFrom m (start m) xs
+
+acceptsFrom :: (Eq q) => FSA q -> q -> String -> Bool
+acceptsFrom m q [] = q `elem` final m
+acceptsFrom m q (x:xs) = acceptsFrom -}
 
 --Closure
 
@@ -48,4 +63,4 @@ trans (_, _, _, _, q) = q
 
 --determinnistic
 
--- toDFA
+--toDFA
