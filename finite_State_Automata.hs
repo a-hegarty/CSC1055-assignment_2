@@ -65,6 +65,12 @@ next trans x ss =
 step :: (Eq q) => FSA q -> Char -> FSA q
 step (qs, as, ss, fs, ts) x = (qs, as, (next ts x ss), fs, ts) 
 
---determinnistic
+--deterministic
+deterministic :: (Eq q) => FSA q -> Bool
+deterministic (qs, as, ss, fs, ts) = 
+    (length ss == 1) 
+    && 
+    and [r == q1 | (q0, a, q1) <- ts, r <- qs, (q0, a, r) `elem` ts]
 
 --toDFA
+--toDFA :: (Ord q ) => FSA q -> FSA [q]
