@@ -88,7 +88,6 @@ closure (qs, as, ss, fs, ts) s =
         then s
         else closure (qs, as, ss, fs, ts) further_state
 
-
 --function
 next :: (Eq q) => [Transition q] -> Char -> [q] -> [q]
 next trans x ss = 
@@ -107,7 +106,14 @@ deterministic (qs, as, ss, fs, ts) =
 
 --function takes a nfa and turns it to a dfa
 toDFA :: (Ord q) => FSA q -> FSA q
-toDfa (qs, as, ss, fs, ts) =
-    let superStates = reach (next ts) as ss
-        superTrans = [(qq, a, next ts) as ss| qq <- superStates, a <- as]
-    in (superStates as [ss] [qq | qq <- superStates, or[q `elem` fs | q <- qq]] superTrans)
+toDFA m = m
+
+reach :: (Ord q) => (Char -> [q] -> [q]) -> [Char] -> [q] -> [[q]]
+reach step as ss =
+    let add qss qs = if qs `elem` qss 
+        then qss
+        else foldl add (qs : qss) [ canonical $ step s qs | s <- as ]
+    in add [] (canonical ss)
+
+canonical :: (Ord q) => [q] -> [q]
+canonical q = sort(nub q)
