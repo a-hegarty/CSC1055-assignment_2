@@ -27,12 +27,15 @@ states (q, _, _, _, _) = q
 alpha :: FSA a -> Alphabet
 alpha (_, a, _, _, _) = a
 
+--returns list of start state
 start :: FSA q -> [q]
 start (_, _, q, _, _) = q
 
+--returns list of end states
 final :: FSA q -> [q]
 final (_, _, _, q, _) = q
 
+--returns list of transitions
 trans :: FSA q -> [Transition q]
 trans (_, _, _, _, q) = q
 
@@ -65,7 +68,7 @@ next trans x ss =
 step :: (Eq q) => FSA q -> Char -> FSA q
 step (qs, as, ss, fs, ts) x = (qs, as, (next ts x ss), fs, ts) 
 
---deterministic
+--function returns whether or not a given fsm is deterministic or not
 deterministic :: (Eq q) => FSA q -> Bool
 deterministic (qs, as, ss, fs, ts) = 
     (length ss == 1) 
