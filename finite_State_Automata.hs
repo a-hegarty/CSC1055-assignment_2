@@ -48,18 +48,20 @@ addState (q, _, _, _, _) s = s:q
 addTransition :: FSA q -> Transition q -> [Transition q]
 addTransition (_, _, _, _, q) t = t:q
 
---accepts
+--function returns bool value of whether a given string will be accepted by the FSA
+-- i.e. if the string provides a valid path through the states of the machine
 accepts :: (Eq q) => FSA q -> String -> Bool
 accepts (_, _, ss, fs, ts) "" = or[q `elem` ss | q <- fs]
 accepts m (x:xs) = accepts (step m x) xs
 
 --Closure
 
---next
+--function
 next :: (Eq q) => [Transition q] -> Char -> [q] -> [q]
 next trans x ss = 
     [q1 | (q, y, q1) <- trans, x == y, q `elem` ss]
 
+--function applys the transitions for given symbol x to move to start states
 step :: (Eq q) => FSA q -> Char -> FSA q
 step (qs, as, ss, fs, ts) x = (qs, as, (next ts x ss), fs, ts) 
 
