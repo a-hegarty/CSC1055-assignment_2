@@ -19,6 +19,25 @@ m1 = ([0, 1, 2, 3, 4],
     (4,'a',4), 
     (4,'b',4)])
 
+m2 :: FSA Int
+m2 = ([0, 1, 2, 3, 4, 5, 6, 7, 8 ,9, 10],
+    ['a', 'b', 'e'],
+    [0],
+    [10],
+    [(0, 'e', 1),
+    (0, 'e', 7),
+    (1, 'e', 2),
+    (1, 'e', 4),
+    (2, 'a', 3),
+    (4, 'b', 5),
+    (3, 'e', 6),
+    (5, 'e', 6),
+    (6, 'e', 1),
+    (6, 'e', 7), 
+    (7, 'a', 8), 
+    (8, 'b', 9),
+    (9, 'b', 10)])
+
 -- returns states of a FSA
 states :: FSA q -> [q]
 states (q, _, _, _, _) = q
@@ -58,6 +77,9 @@ accepts (_, _, ss, fs, ts) "" = or[q `elem` ss | q <- fs]
 accepts m (x:xs) = accepts (step m x) xs
 
 --Closure
+closure :: (Eq q) => FSA q -> [q]-> [q]
+closure (qs, as, ss, fs, ts) q = 
+    [q1 | (q0, a, q1) <- ts, a == 'e', q0 `elem` q]
 
 --function
 next :: (Eq q) => [Transition q] -> Char -> [q] -> [q]
@@ -73,7 +95,7 @@ deterministic :: (Eq q) => FSA q -> Bool
 deterministic (qs, as, ss, fs, ts) = 
     (length ss == 1) 
     && 
-    and [r == q1 | (q0, a, q1) <- ts, r <- qs, (q0, a, r) `elem` ts]
+    and [r == q1 | (q, a, q1) <- ts, r <- qs, (q, a, r) `elem` ts]
 
 --toDFA
 --toDFA :: (Ord q ) => FSA q -> FSA [q]
