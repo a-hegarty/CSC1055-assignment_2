@@ -105,5 +105,9 @@ deterministic (qs, as, ss, fs, ts) =
     && 
     and [r == q1 | (q, a, q1) <- ts, r <- qs, (q, a, r) `elem` ts]
 
---toDFA
---toDFA :: (Ord q ) => FSA q -> FSA [q]
+--function takes a nfa and turns it to a dfa
+toDFA :: (Ord q) => FSA q -> FSA q
+toDfa (qs, as, ss, fs, ts) =
+    let superStates = reach (next ts) as ss
+        superTrans = [(qq, a, next ts) as ss| qq <- superStates, a <- as]
+    in (superStates as [ss] [qq | qq <- superStates, or[q `elem` fs | q <- qq]] superTrans)
