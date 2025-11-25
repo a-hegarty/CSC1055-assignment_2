@@ -40,18 +40,6 @@ m2 = ([0, 1, 2, 3, 4, 5, 6, 7, 8 ,9, 10],
     (8, 'b', 9),
     (9, 'b', 10)])
 
--- returns states of a FSA
-states :: FSA q -> [q]
-states (q, _, _, _, _) = q
-
--- returns alphabet
-alpha :: FSA a -> Alphabet
-alpha (_, a, _, _, _) = a
-
---returns list of start state
-start :: FSA q -> [q]
-start (_, _, q, _, _) = q
-
 --returns list of end states
 final :: FSA q -> [q]
 final (_, _, _, q, _) = q
@@ -59,10 +47,6 @@ final (_, _, _, q, _) = q
 --returns list of transitions
 trans :: FSA q -> [Transition q]
 trans (_, _, _, _, q) = q
-
-delta :: (Eq q) => FSA q -> q -> Char -> [q]
-delta m q c = 
-    [q1 | (q0, c0, q1) <- trans m, q0 == q, c0 == c]
 
 -- function adds state to list of states in first element of data type FSA
 addState :: (Eq q) => FSA q -> q -> [q]
