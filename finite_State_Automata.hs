@@ -78,17 +78,15 @@ accepts :: (Eq q) => FSA q -> String -> Bool
 accepts (_, _, ss, fs, ts) "" = or[q `elem` ss | q <- fs]
 accepts m (x:xs) = accepts (step m x) xs
 
---Closure
-closure :: (Eq q) => FSA q -> q -> [q]
-closure m s = epsil_close m [s]
-
-epsil_close :: (Eq q) => FSA q -> [q] -> [q]
-epsil_close (qs, as, ss, fs, ts) s =
+--function displays the list of states that can be accessed from a given state only using empty transitions
+-- function must be called in the form closure FSA [State]
+closure :: (Eq q) => FSA q -> [q] -> [q]
+closure (qs, as, ss, fs, ts) s =
     let next_State = [q1| (q0, a, q1) <- ts, q0 `elem` qs, a == 'e'] 
         further_state = nub(s ++ next_State)
     in if further_state == s
         then s
-        else epsil_close (qs, as, ss, fs, ts) further_state
+        else closure (qs, as, ss, fs, ts) further_state
 
 
 --function
